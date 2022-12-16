@@ -1,6 +1,6 @@
 --[[
 
-MidosLib
+MinosLib
 by Midos
 Built on top of RayField
 Special thanks to shlex and iRay for this amazing library
@@ -11,17 +11,17 @@ Special thanks to shlex and iRay for this amazing library
 
 local Release = "Beta 7R"
 local NotificationDuration = 6.5
-local MidosLibFolder = "MidosLib"
-local ConfigurationFolder = MidosLibFolder.."/Configurations"
+local MinosLibFolder = "MinosLib"
+local ConfigurationFolder = MinosLibFolder.."/Configurations"
 local ConfigurationExtension = ".rfld"
 
 
 
-local MidosLibLibrary = {
+local MinosLibLibrary = {
 	Flags = {},
 	Theme = {
 		Default = {
-			TextFont = "Default", -- Default will use the various font faces used across MidosLib
+			TextFont = "Default", -- Default will use the various font faces used across MinosLib
 			TextColor = Color3.fromRGB(240, 240, 240),
 			
 			Background = Color3.fromRGB(25, 25, 25),
@@ -60,7 +60,7 @@ local MidosLibLibrary = {
 			PlaceholderColor = Color3.fromRGB(178, 178, 178)
 		},
 		Light = {
-			TextFont = "Gotham", -- Default will use the various font faces used across MidosLib
+			TextFont = "Gotham", -- Default will use the various font faces used across MinosLib
 			TextColor = Color3.fromRGB(50, 50, 50), -- i need to make all text 240, 240, 240 and base gray on transparency not color to do this
 			
 			Background = Color3.fromRGB(255, 255, 255),
@@ -113,33 +113,33 @@ local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 
 -- Interface Management
-local MidosLib = game:GetObjects("rbxassetid://11833206872")[1]
+local MinosLib = game:GetObjects("rbxassetid://11833206872")[1]
 
 
 
 if gethui then
-	MidosLib.Parent = gethui()
+	MinosLib.Parent = gethui()
 elseif syn.protect_gui then 
-	syn.protect_gui(MidosLib)
-	MidosLib.Parent = CoreGui
+	syn.protect_gui(MinosLib)
+	MinosLib.Parent = CoreGui
 elseif CoreGui:FindFirstChild("RobloxGui") then
-	MidosLib.Parent = CoreGui:FindFirstChild("RobloxGui")
+	MinosLib.Parent = CoreGui:FindFirstChild("RobloxGui")
 else
-	MidosLib.Parent = CoreGui
+	MinosLib.Parent = CoreGui
 end
 
 if gethui then
 	for _, Interface in ipairs(gethui():GetChildren()) do
-		if Interface.Name == MidosLib.Name and Interface ~= MidosLib then
+		if Interface.Name == MinosLib.Name and Interface ~= MinosLib then
 			Interface.Enabled = false
-			Interface.Name = "MidosLib-Old"
+			Interface.Name = "MinosLib-Old"
 		end
 	end
 else
 	for _, Interface in ipairs(CoreGui:GetChildren()) do
-		if Interface.Name == MidosLib.Name and Interface ~= MidosLib then
+		if Interface.Name == MinosLib.Name and Interface ~= MinosLib then
 			Interface.Enabled = false
-			Interface.Name = "MidosLib-Old"
+			Interface.Name = "MinosLib-Old"
 		end
 	end
 end
@@ -147,13 +147,13 @@ end
 -- Object Variables
 
 local Camera = workspace.CurrentCamera
-local Main = MidosLib.Main
+local Main = MinosLib.Main
 local Topbar = Main.Topbar
 local Elements = Main.Elements
 local LoadingFrame = Main.LoadingFrame
 local TabList = Main.TabList
 
-MidosLib.DisplayOrder = 100
+MinosLib.DisplayOrder = 100
 LoadingFrame.Version.Text = Release
 
 
@@ -166,13 +166,13 @@ local Minimised = false
 local Hidden = false
 local Debounce = false
 local hideKey = Enum.KeyCode.RightShift
-local Notifications = MidosLib.Notifications
+local Notifications = MinosLib.Notifications
 
-local SelectedTheme = MidosLibLibrary.Theme.Default
+local SelectedTheme = MinosLibLibrary.Theme.Default
 
 function ChangeTheme(ThemeName)
-	SelectedTheme = MidosLibLibrary.Theme[ThemeName]
-	for _, obj in ipairs(MidosLib:GetDescendants()) do
+	SelectedTheme = MinosLibLibrary.Theme[ThemeName]
+	for _, obj in ipairs(MinosLib:GetDescendants()) do
 		if obj.ClassName == "TextLabel" or obj.ClassName == "TextBox" or obj.ClassName == "TextButton" then
 			if SelectedTheme.TextFont ~= "Default" then 
 				obj.TextColor3 = SelectedTheme.TextColor
@@ -181,13 +181,13 @@ function ChangeTheme(ThemeName)
 		end
 	end
 	
-	MidosLib.Main.BackgroundColor3 = SelectedTheme.Background
-	MidosLib.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
-	MidosLib.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
-	MidosLib.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
+	MinosLib.Main.BackgroundColor3 = SelectedTheme.Background
+	MinosLib.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
+	MinosLib.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
+	MinosLib.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
 	
-	MidosLib.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
-	MidosLib.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
+	MinosLib.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
+	MinosLib.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
 	
 	for _, TabPage in ipairs(Elements:GetChildren()) do
 		for _, Element in ipairs(TabPage:GetChildren()) do
@@ -241,16 +241,16 @@ end
 local function LoadConfiguration(Configuration)
 	local Data = HttpService:JSONDecode(Configuration)
 	table.foreach(Data, function(FlagName, FlagValue)
-		if MidosLibLibrary.Flags[FlagName] then
+		if MinosLibLibrary.Flags[FlagName] then
 			spawn(function() 
-				if MidosLibLibrary.Flags[FlagName].Type == "ColorPicker" then
-					MidosLibLibrary.Flags[FlagName]:Set(UnpackColor(FlagValue))
+				if MinosLibLibrary.Flags[FlagName].Type == "ColorPicker" then
+					MinosLibLibrary.Flags[FlagName]:Set(UnpackColor(FlagValue))
 				else
-					if MidosLibLibrary.Flags[FlagName].CurrentValue or MidosLibLibrary.Flags[FlagName].CurrentKeybind or MidosLibLibrary.Flags[FlagName].CurrentOption or MidosLibLibrary.Flags[FlagName].Color ~= FlagValue then MidosLibLibrary.Flags[FlagName]:Set(FlagValue) end
+					if MinosLibLibrary.Flags[FlagName].CurrentValue or MinosLibLibrary.Flags[FlagName].CurrentKeybind or MinosLibLibrary.Flags[FlagName].CurrentOption or MinosLibLibrary.Flags[FlagName].Color ~= FlagValue then MinosLibLibrary.Flags[FlagName]:Set(FlagValue) end
 				end    
 			end)
 		else
-			MidosLibLibrary:Notify({Title = "Flag Error", Content = "MidosLib was unable to find '"..FlagName.. "'' in the current script"})
+			MinosLibLibrary:Notify({Title = "Flag Error", Content = "MinosLib was unable to find '"..FlagName.. "'' in the current script"})
 		end
 	end)
 end
@@ -258,7 +258,7 @@ end
 local function SaveConfiguration()
 	if not CEnabled then return end
 	local Data = {}
-	for i,v in pairs(MidosLibLibrary.Flags) do
+	for i,v in pairs(MinosLibLibrary.Flags) do
 		if v.Type == "ColorPicker" then
 			Data[i] = PackColor(v.Color)
 		else
@@ -489,7 +489,7 @@ local neon = (function() -- Open sourced neon module
 
 end)()
 
-function MidosLibLibrary:Notify(NotificationSettings)
+function MinosLibLibrary:Notify(NotificationSettings)
 	spawn(function()
 		local ActionCompleted = true
 		local Notification = Notifications.Template:Clone()
@@ -515,7 +515,7 @@ function MidosLibLibrary:Notify(NotificationSettings)
 				ActionCompleted = false
 				local NewAction = Notification.Actions.Template:Clone()
 				NewAction.BackgroundColor3 = SelectedTheme.NotificationActionsBackground
-				if SelectedTheme ~= MidosLibLibrary.Theme.Default then
+				if SelectedTheme ~= MinosLibLibrary.Theme.Default then
 					NewAction.TextColor3 = SelectedTheme.TextColor
 				end
 				NewAction.Name = Action.Name
@@ -529,7 +529,7 @@ function MidosLibLibrary:Notify(NotificationSettings)
 				NewAction.MouseButton1Click:Connect(function()
 					local Success, Response = pcall(Action.Callback)
 					if not Success then
-						print("MidosLib | Action: "..Action.Name.." Callback Error " ..tostring(Response))
+						print("MinosLib | Action: "..Action.Name.." Callback Error " ..tostring(Response))
 					end
 					ActionCompleted = true
 				end)
@@ -578,7 +578,7 @@ function MidosLibLibrary:Notify(NotificationSettings)
 			end
 		end
 
-		if MidosLib.Name == "MidosLib" then
+		if MinosLib.Name == "MinosLib" then
 			neon:BindFrame(Notification.BlurModule, {
 				Transparency = 0.98;
 				BrickColor = BrickColor.new("Institutional white");
@@ -635,7 +635,7 @@ end
 
 function Hide()
 	Debounce = true
-	MidosLibLibrary:Notify({Title = "Interface Hidden", Content = "The interface has been hidden, you can unhide the interface by tapping " .. hideKey.Name, Duration = 5})
+	MinosLibLibrary:Notify({Title = "Interface Hidden", Content = "The interface has been hidden, you can unhide the interface by tapping " .. hideKey.Name, Duration = 5})
 	for _, TopbarButton in ipairs(Topbar:GetChildren()) do
 		if TopbarButton.ClassName == "ImageButton" then
 			TweenService:Create(TopbarButton, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
@@ -874,7 +874,7 @@ function Minimise()
 	Debounce = false
 end
 
-function MidosLibLibrary:CreateWindow(Settings)
+function MinosLibLibrary:CreateWindow(Settings)
 	local Passthrough = false
 	Topbar.Title.Text = Settings.Name
 	Main.Size = UDim2.new(0, 450, 0, 260)
@@ -885,10 +885,10 @@ function MidosLibLibrary:CreateWindow(Settings)
 	LoadingFrame.Subtitle.TextTransparency = 1
 	Main.Shadow.Image.ImageTransparency = 1
 	LoadingFrame.Version.TextTransparency = 1
-	LoadingFrame.Title.Text = Settings.LoadingTitle or "MidosLib Interface Suite"
+	LoadingFrame.Title.Text = Settings.LoadingTitle or "MinosLib Interface Suite"
 	LoadingFrame.Subtitle.Text = Settings.LoadingSubtitle or "by Sirius"
-	if Settings.LoadingTitle ~= "MidosLib Interface Suite" then
-		LoadingFrame.Version.Text = "MidosLib UI"
+	if Settings.LoadingTitle ~= "MinosLib Interface Suite" then
+		LoadingFrame.Version.Text = "MinosLib UI"
 	end
 	Topbar.Visible = false
 	Elements.Visible = false
@@ -899,7 +899,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 		if not Settings.ConfigurationSaving.FileName then
 			Settings.ConfigurationSaving.FileName = tostring(game.PlaceId)
 		end
-		if not isfolder(MidosLibFolder.."/".."Configuration Folders") then
+		if not isfolder(MinosLibFolder.."/".."Configuration Folders") then
 			
 		end
 		if Settings.ConfigurationSaving.Enabled == nil then
@@ -929,10 +929,10 @@ function MidosLibLibrary:CreateWindow(Settings)
 	end
 	
 	if Settings.Discord then
-		if not isfolder(MidosLibFolder.."/Discord Invites") then
-			makefolder(MidosLibFolder.."/Discord Invites")
+		if not isfolder(MinosLibFolder.."/Discord Invites") then
+			makefolder(MinosLibFolder.."/Discord Invites")
 		end
-		if not isfile(MidosLibFolder.."/Discord Invites".."/"..Settings.Discord.Invite..ConfigurationExtension) then
+		if not isfile(MinosLibFolder.."/Discord Invites".."/"..Settings.Discord.Invite..ConfigurationExtension) then
 			if request then
 				request({
 					Url = 'http://127.0.0.1:6463/rpc?v=1',
@@ -950,7 +950,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 			end
 			
 			if Settings.Discord.RememberJoins then -- We do logic this way so if the developer changes this setting, the user still won't be prompted, only new users
-				writefile(MidosLibFolder.."/Discord Invites".."/"..Settings.Discord.Invite..ConfigurationExtension,"MidosLib RememberJoins is true for this invite, this invite will not ask you to join again")
+				writefile(MinosLibFolder.."/Discord Invites".."/"..Settings.Discord.Invite..ConfigurationExtension,"MinosLib RememberJoins is true for this invite, this invite will not ask you to join again")
 			end
 		else
 			
@@ -963,8 +963,8 @@ function MidosLibLibrary:CreateWindow(Settings)
 			return
 		end
 		
-		if not isfolder(MidosLibFolder.."/Key System") then
-			makefolder(MidosLibFolder.."/Key System")
+		if not isfolder(MinosLibFolder.."/Key System") then
+			makefolder(MinosLibFolder.."/Key System")
 		end
 		
 		if Settings.KeySettings.GrabKeyFromSite then
@@ -972,7 +972,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 				Settings.KeySettings.Key = game:HttpGet(Settings.KeySettings.Key)
 			end)
 			if not Success then
-				print("MidosLib | "..Settings.KeySettings.Key.." Error " ..tostring(Response))
+				print("MinosLib | "..Settings.KeySettings.Key.." Error " ..tostring(Response))
 			end
 		end
 		
@@ -980,21 +980,21 @@ function MidosLibLibrary:CreateWindow(Settings)
 			Settings.KeySettings.FileName = "No file name specified"
 		end
 
-		if isfile(MidosLibFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension) then
-			if readfile(MidosLibFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension) == Settings.KeySettings.Key then
+		if isfile(MinosLibFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension) then
+			if readfile(MinosLibFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension) == Settings.KeySettings.Key then
 				Passthrough = true
 			end
 		end
 		
 		if not Passthrough then
 			local AttemptsRemaining = math.random(2,6)
-			MidosLib.Enabled = false
+			MinosLib.Enabled = false
 			local KeyUI = game:GetObjects("rbxassetid://11380036235")[1]
 
 			if gethui then
 				KeyUI.Parent = gethui()
 			elseif syn.protect_gui then
-				syn.protect_gui(MidosLib)
+				syn.protect_gui(MinosLib)
 				KeyUI.Parent = CoreGui
 			else
 				KeyUI.Parent = CoreGui
@@ -1070,9 +1070,9 @@ function MidosLibLibrary:CreateWindow(Settings)
 					Passthrough = true
 					if Settings.KeySettings.SaveKey then
 						if writefile then
-							writefile(MidosLibFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension, Settings.KeySettings.Key)
+							writefile(MinosLibFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension, Settings.KeySettings.Key)
 						end
-						MidosLibLibrary:Notify({Title = "Key System", Content = "The key for this script has been saved successfully"})
+						MinosLibLibrary:Notify({Title = "Key System", Content = "The key for this script has been saved successfully"})
 					end
 				else
 					if AttemptsRemaining == 0 then
@@ -1119,7 +1119,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 				TweenService:Create(KeyMain.NoteMessage, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
 				TweenService:Create(KeyMain.Hide, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
 				wait(0.51)
-				MidosLibLibrary:Destroy()
+				MinosLibLibrary:Destroy()
 				KeyUI:Destroy()
 			end)
 		else
@@ -1132,7 +1132,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 	
 	Notifications.Template.Visible = false
 	Notifications.Visible = true
-	MidosLib.Enabled = true
+	MinosLib.Enabled = true
 	wait(0.5)
 	TweenService:Create(Main, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = 0}):Play()
 	TweenService:Create(Main.Shadow.Image, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.55}):Play()
@@ -1196,7 +1196,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 			Elements.UIPageLayout.Animated = true
 		end
 		
-		if SelectedTheme ~= MidosLibLibrary.Theme.Default then
+		if SelectedTheme ~= MinosLibLibrary.Theme.Default then
 			TabButton.Shadow.Visible = false
 		end
 		TabButton.UIStroke.Color = SelectedTheme.TabStroke
@@ -1284,7 +1284,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 					TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
 					TweenService:Create(Button.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
 					Button.Title.Text = "Callback Error"
-					print("MidosLib | "..ButtonSettings.Name.." Callback Error " ..tostring(Response))
+					print("MinosLib | "..ButtonSettings.Name.." Callback Error " ..tostring(Response))
 					wait(0.5)
 					Button.Title.Text = ButtonSettings.Name
 					TweenService:Create(Button, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -1513,7 +1513,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 			
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and ColorPickerSettings.Flag then
-					MidosLibLibrary.Flags[ColorPickerSettings.Flag] = ColorPickerSettings
+					MinosLibLibrary.Flags[ColorPickerSettings.Flag] = ColorPickerSettings
 				end
 			end
 			
@@ -1649,7 +1649,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 					TweenService:Create(Input, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Input.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
 					Input.Title.Text = "Callback Error"
-					print("MidosLib | "..InputSettings.Name.." Callback Error " ..tostring(Response))
+					print("MinosLib | "..InputSettings.Name.." Callback Error " ..tostring(Response))
 					wait(0.5)
 					Input.Title.Text = InputSettings.Name
 					TweenService:Create(Input, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -1811,7 +1811,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 							TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 							TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
 							Dropdown.Title.Text = "Callback Error"
-							print("MidosLib | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
+							print("MinosLib | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
 							wait(0.5)
 							Dropdown.Title.Text = DropdownSettings.Name
 							TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -1859,7 +1859,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 					TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
 					Dropdown.Title.Text = "Callback Error"
-					print("MidosLib | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
+					print("MinosLib | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
 					wait(0.5)
 					Dropdown.Title.Text = DropdownSettings.Name
 					TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -1879,7 +1879,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and DropdownSettings.Flag then
-					MidosLibLibrary.Flags[DropdownSettings.Flag] = DropdownSettings
+					MinosLibLibrary.Flags[DropdownSettings.Flag] = DropdownSettings
 				end
 			end
 
@@ -1956,7 +1956,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 							TweenService:Create(Keybind, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 							TweenService:Create(Keybind.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
 							Keybind.Title.Text = "Callback Error"
-							print("MidosLib | "..KeybindSettings.Name.." Callback Error " ..tostring(Response))
+							print("MinosLib | "..KeybindSettings.Name.." Callback Error " ..tostring(Response))
 							wait(0.5)
 							Keybind.Title.Text = KeybindSettings.Name
 							TweenService:Create(Keybind, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -1990,7 +1990,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 			end
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and KeybindSettings.Flag then
-					MidosLibLibrary.Flags[KeybindSettings.Flag] = KeybindSettings
+					MinosLibLibrary.Flags[KeybindSettings.Flag] = KeybindSettings
 				end
 			end
 			return KeybindSettings
@@ -2011,7 +2011,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 			Toggle.Title.TextTransparency = 1
 			Toggle.Switch.BackgroundColor3 = SelectedTheme.ToggleBackground
 			
-			if SelectedTheme ~= MidosLibLibrary.Theme.Default then
+			if SelectedTheme ~= MinosLibLibrary.Theme.Default then
 				Toggle.Switch.Shadow.Visible = false
 			end
 
@@ -2077,7 +2077,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
 					Toggle.Title.Text = "Callback Error"
-					print("MidosLib | "..ToggleSettings.Name.." Callback Error " ..tostring(Response))
+					print("MinosLib | "..ToggleSettings.Name.." Callback Error " ..tostring(Response))
 					wait(0.5)
 					Toggle.Title.Text = ToggleSettings.Name
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -2124,7 +2124,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
 					Toggle.Title.Text = "Callback Error"
-					print("MidosLib | "..ToggleSettings.Name.." Callback Error " ..tostring(Response))
+					print("MinosLib | "..ToggleSettings.Name.." Callback Error " ..tostring(Response))
 					wait(0.5)
 					Toggle.Title.Text = ToggleSettings.Name
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -2135,7 +2135,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and ToggleSettings.Flag then
-					MidosLibLibrary.Flags[ToggleSettings.Flag] = ToggleSettings
+					MinosLibLibrary.Flags[ToggleSettings.Flag] = ToggleSettings
 				end
 			end
 
@@ -2155,7 +2155,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 			Slider.UIStroke.Transparency = 1
 			Slider.Title.TextTransparency = 1
 			
-			if SelectedTheme ~= MidosLibLibrary.Theme.Default then
+			if SelectedTheme ~= MinosLibLibrary.Theme.Default then
 				Slider.Main.Shadow.Visible = false
 			end
 			
@@ -2239,7 +2239,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 								TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 								TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
 								Slider.Title.Text = "Callback Error"
-								print("MidosLib | "..SliderSettings.Name.." Callback Error " ..tostring(Response))
+								print("MinosLib | "..SliderSettings.Name.." Callback Error " ..tostring(Response))
 								wait(0.5)
 								Slider.Title.Text = SliderSettings.Name
 								TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -2266,7 +2266,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
 					Slider.Title.Text = "Callback Error"
-					print("MidosLib | "..SliderSettings.Name.." Callback Error " ..tostring(Response))
+					print("MinosLib | "..SliderSettings.Name.." Callback Error " ..tostring(Response))
 					wait(0.5)
 					Slider.Title.Text = SliderSettings.Name
 					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -2277,7 +2277,7 @@ function MidosLibLibrary:CreateWindow(Settings)
 			end
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and SliderSettings.Flag then
-					MidosLibLibrary.Flags[SliderSettings.Flag] = SliderSettings
+					MinosLibLibrary.Flags[SliderSettings.Flag] = SliderSettings
 				end
 			end
 			return SliderSettings
@@ -2322,8 +2322,8 @@ function MidosLibLibrary:CreateWindow(Settings)
 end
 
 
-function MidosLibLibrary:Destroy()
-	MidosLib:Destroy()
+function MinosLibLibrary:Destroy()
+	MinosLib:Destroy()
 end
 
 Topbar.ChangeSize.MouseButton1Click:Connect(function()
@@ -2379,15 +2379,15 @@ for _, TopbarButton in ipairs(Topbar:GetChildren()) do
 end
 
 
-function MidosLibLibrary:LoadConfiguration()
+function MinosLibLibrary:LoadConfiguration()
 	if CEnabled then
 		pcall(function()
 			if isfile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension) then
 				LoadConfiguration(readfile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension))
-				MidosLibLibrary:Notify({Title = "Configuration Loaded", Content = "The configuration file for this script has been loaded from a previous session"})
+				MinosLibLibrary:Notify({Title = "Configuration Loaded", Content = "The configuration file for this script has been loaded from a previous session"})
 			end
 		end)
 	end
 end
 
-return MidosLibLibrary
+return MinosLibLibrary
