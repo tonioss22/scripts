@@ -1,7 +1,7 @@
 --[[
 
 MinosLib
-by Midos
+by tonioss22
 Built on top of RayField
 Special thanks to shlex and iRay for this amazing library
 
@@ -115,8 +115,7 @@ local CoreGui = game:GetService("CoreGui")
 -- Interface Management
 local MinosLib = game:GetObjects("rbxassetid://11833206872")[1]
 
-
-
+--Clean up old interfaces
 if gethui then
 	MinosLib.Parent = gethui()
 elseif syn.protect_gui then 
@@ -130,19 +129,33 @@ end
 
 if gethui then
 	for _, Interface in ipairs(gethui():GetChildren()) do
-		if Interface.Name == MinosLib.Name and Interface ~= MinosLib then
-			Interface.Enabled = false
-			Interface.Name = "MinosLib-Old"
+		if Interface ~= MinosLib and Interface.Name == getgenv().libraryName then
+			Interface:Destroy()
 		end
 	end
 else
 	for _, Interface in ipairs(CoreGui:GetChildren()) do
-		if Interface.Name == MinosLib.Name and Interface ~= MinosLib then
-			Interface.Enabled = false
-			Interface.Name = "MinosLib-Old"
+		if Interface ~= MinosLib and Interface.Name == getgenv().libraryName then
+			Interface:Destroy()
 		end
 	end
 end
+
+--Give a random name to the library to be harder to catch
+local charset = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890"
+math.randomseed(os.clock())
+function randomString(length)
+	local ret = {}
+	local r
+	for i = 1, length do
+		r = math.random(1, #charset)
+		table.insert(ret, charset:sub(r, r))
+	end
+	return table.concat(ret)
+end
+
+getgenv().libraryName = randomString(10)
+MinosLib.Name = getgenv().libraryName
 
 -- Object Variables
 
@@ -197,7 +210,6 @@ function ChangeTheme(ThemeName)
 			end
 		end
 	end
-	
 end
 
 local function AddDraggingFunctionality(DragPoint, Main)
@@ -663,7 +675,7 @@ function Hide()
 							TweenService:Create(element.Title, TweenInfo.new(0.1, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
 						end
 						for _, child in ipairs(element:GetChildren()) do
-							if child.ClassName == "ScrollingFrame" or child.ClassName == "Frame" or child.ClassName == "TextLabel" or child.ClassName == "TextBox" or child.ClassName == "ImageButton" or child.ClassName == "ImageLabel" then
+							if child.ClassName == "Frame" or child.ClassName == "ScrollingFrame" or child.ClassName == "TextLabel" or child.ClassName == "TextBox" or child.ClassName == "ImageButton" or child.ClassName == "ImageLabel" then
 								child.Visible = false
 							end
 						end
@@ -741,7 +753,7 @@ function Unhide()
 							TweenService:Create(element.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
 						end
 						for _, child in ipairs(element:GetChildren()) do
-							if child.ClassName == "ScrollingFrame" or child.ClassName == "Frame" or child.ClassName == "TextLabel" or child.ClassName == "TextBox" or child.ClassName == "ImageButton" or child.ClassName == "ImageLabel" then
+							if child.ClassName == "Frame" or child.ClassName == "TextLabel" or child.ClassName == "TextBox" or child.ClassName == "ImageButton" or child.ClassName == "ImageLabel" or (child.ClassName == "ScrollingFrame" and child.Parent.Toggle.Rotation == 0) then
 								child.Visible = true
 							end
 						end
@@ -1051,7 +1063,6 @@ function MinosLibLibrary:CreateWindow(Settings)
 			wait(0.15)
 			TweenService:Create(KeyMain.Hide, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {ImageTransparency = 0.3}):Play()
 
-
 			KeyUI.Main.Input.InputBox.FocusLost:Connect(function()
 				if KeyMain.Input.InputBox.Text == Settings.KeySettings.Key then
 					TweenService:Create(KeyMain, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
@@ -1102,7 +1113,6 @@ function MinosLibLibrary:CreateWindow(Settings)
 					TweenService:Create(KeyMain, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {Position = UDim2.new(0.5,0,0.5,0)}):Play()
 					TweenService:Create(KeyMain, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 700, 0, 187)}):Play()
 				end
-                TweenService:Create(KeyMain.ContentDivider, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundTransparency = 0}):Play()
 			end)
 
 			KeyMain.Hide.MouseButton1Click:Connect(function()
@@ -1153,8 +1163,7 @@ function MinosLibLibrary:CreateWindow(Settings)
 	local FirstTab = false
 	local Window = {}
 	function Window:CreateTab(Name,Image)
-		local SDone = false
-		local TabButton = TabList.Template:Clone()
+		local SDone = false		local TabButton = TabList.Template:Clone()
 		TabButton.Name = Name
 		TabButton.Title.Text = Name
 		TabButton.Parent = TabList
@@ -1690,7 +1699,6 @@ function MinosLibLibrary:CreateWindow(Settings)
 			Dropdown.List.Visible = false
 
 			Dropdown.InputFrame.InputBox.Text = DropdownSettings.CurrentOption
-			local selectedOption = DropdownSettings.CurrentOption
 			Dropdown.InputFrame.InputBox.PlaceholderText = (DropdownSettings.PlaceholderText ~= nil and DropdownSettings.PlaceholderText or "Select")
 
 			Dropdown.BackgroundTransparency = 1
@@ -1711,33 +1719,28 @@ function MinosLibLibrary:CreateWindow(Settings)
 
 			Dropdown.Toggle.Rotation = 180
 
-			local function openDropbox(onlyOpen)
-				TweenService:Create(Dropdown, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
-				TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-				wait(0.1)
-				TweenService:Create(Dropdown, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
-				TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
-				if Debounce then return end
-				if Dropdown.List.Visible and onlyOpen == false then
-					Debounce = true
-					TweenService:Create(Dropdown, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(1, -10, 0, 45)}):Play()
-					for _, DropdownOpt in ipairs(Dropdown.List:GetChildren()) do
-						if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= "Placeholder" then
-							TweenService:Create(DropdownOpt, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
-							TweenService:Create(DropdownOpt.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
-							TweenService:Create(DropdownOpt.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
-						end
+			local function closeDropdown()
+				Debounce = true
+				TweenService:Create(Dropdown, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(1, -10, 0, 45)}):Play()
+				for _, DropdownOpt in ipairs(Dropdown.List:GetChildren()) do
+					if DropdownOpt.ClassName == "Frame" and DropdownOpt.Name ~= "Placeholder" then
+						TweenService:Create(DropdownOpt, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 1}):Play()
+						TweenService:Create(DropdownOpt.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
+						TweenService:Create(DropdownOpt.Title, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextTransparency = 1}):Play()
 					end
-					TweenService:Create(Dropdown.List, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ScrollBarImageTransparency = 1}):Play()
-					TweenService:Create(Dropdown.Toggle, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Rotation = 180}):Play()	
-					wait(0.35)
-					Dropdown.List.Visible = false
-					Debounce = false
-					if Dropdown.InputFrame.InputBox.Text ~= selectedOption then
-						Dropdown.InputFrame.InputBox.Text = selectedOption
-					end
-				else
-					TweenService:Create(Dropdown, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(1, -10, 0, 180)}):Play()
+				end
+				TweenService:Create(Dropdown.List, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ScrollBarImageTransparency = 1}):Play()
+				TweenService:Create(Dropdown.Toggle, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Rotation = 180}):Play()	
+				wait(0.35)
+				Dropdown.List.Visible = false
+				Debounce = false
+				if Dropdown.InputFrame.InputBox.Text ~= DropdownSettings.CurrentOption then
+					Dropdown.InputFrame.InputBox.Text = DropdownSettings.CurrentOption
+				end
+			end
+
+			local function openDropdown()
+				TweenService:Create(Dropdown, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Size = UDim2.new(1, -10, 0, 180)}):Play()
 					Dropdown.List.Visible = true
 					TweenService:Create(Dropdown.List, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {ScrollBarImageTransparency = 0.7}):Play()
 					TweenService:Create(Dropdown.Toggle, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Rotation = 0}):Play()	
@@ -1749,15 +1752,28 @@ function MinosLibLibrary:CreateWindow(Settings)
 						end
 					end
 					Dropdown.InputFrame.InputBox.Text = ""
+			end
+
+			local function switchDropdown()
+				TweenService:Create(Dropdown, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackgroundHover}):Play()
+				TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
+				wait(0.1)
+				TweenService:Create(Dropdown, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+				TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
+				if Debounce then return end
+				if Dropdown.List.Visible then
+					closeDropdown()
+				else
+					openDropdown()
 				end
 			end
 
 			Dropdown.Interact.MouseButton1Click:Connect(function()
-				openDropbox(false)
+				switchDropdown()
 			end)
 
 			Dropdown.InputFrame.InputBox.Focused:Connect(function()
-				openDropbox(true)
+				openDropdown()
 			end)
 
 			Dropdown.MouseEnter:Connect(function()
@@ -1850,7 +1866,6 @@ function MinosLibLibrary:CreateWindow(Settings)
 
 			function DropdownSettings:Set(NewOption)
 				Dropdown.InputFrame.InputBox.Text = NewOption
-				selectedOption = NewOption
 				DropdownSettings.CurrentOption = NewOption
 				local Success, Response = pcall(function()
 					DropdownSettings.Callback(NewOption)
@@ -1882,7 +1897,7 @@ function MinosLibLibrary:CreateWindow(Settings)
 					MinosLibLibrary.Flags[DropdownSettings.Flag] = DropdownSettings
 				end
 			end
-
+			
 			return DropdownSettings
 		end
 
@@ -1939,8 +1954,21 @@ function MinosLibLibrary:CreateWindow(Settings)
 						KeybindSettings.CurrentKeybind = tostring(NewKeyNoEnum)
 						Keybind.KeybindFrame.KeybindBox:ReleaseFocus()
 						SaveConfiguration()
+						if KeybindSettings.ChangeCallback ~= nil then
+							local Success, Response = pcall(KeybindSettings.ChangeCallback(input.KeyCode.Name))
+							if not Success then
+								TweenService:Create(Keybind, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
+								TweenService:Create(Keybind.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
+								Keybind.Title.Text = "Callback Error"
+								print("MinosLib | "..KeybindSettings.Name.." Change Callback Error " ..tostring(Response))
+								wait(0.5)
+								Keybind.Title.Text = KeybindSettings.Name
+								TweenService:Create(Keybind, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
+								TweenService:Create(Keybind.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
+							end
+						end
 					end
-				elseif KeybindSettings.CurrentKeybind ~= nil and (input.KeyCode == Enum.KeyCode[KeybindSettings.CurrentKeybind] and not processed) then -- Test
+				elseif KeybindSettings.CurrentKeybind ~= nil and (input.KeyCode == Enum.KeyCode[KeybindSettings.CurrentKeybind] and not processed and KeybindSettings.Callback ~= nil) then -- Test
 					local Held = true
 					local Connection
 					Connection = input.Changed:Connect(function(prop)
@@ -1951,7 +1979,7 @@ function MinosLibLibrary:CreateWindow(Settings)
 					end)
 
 					if not KeybindSettings.HoldToInteract then
-						local Success, Response = pcall(KeybindSettings.Callback)
+						local Success, Response = pcall(KeybindSettings.Callback(input.KeyCode.Name))
 						if not Success then
 							TweenService:Create(Keybind, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 							TweenService:Create(Keybind.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 1}):Play()
@@ -2310,6 +2338,7 @@ function MinosLibLibrary:CreateWindow(Settings)
 	TweenService:Create(Topbar.CornerRepair, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = 0}):Play()
 	wait(0.1)
 	TweenService:Create(Topbar.Divider, TweenInfo.new(1, Enum.EasingStyle.Quint), {Size = UDim2.new(1, 0, 0, 1)}):Play()
+	TweenService:Create(Main.ContentDivider, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = 0}):Play()
 	wait(0.1)
 	TweenService:Create(Topbar.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
 	wait(0.1)
@@ -2317,7 +2346,7 @@ function MinosLibLibrary:CreateWindow(Settings)
 	wait(0.1)
 	TweenService:Create(Topbar.Hide, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {ImageTransparency = 0.8}):Play()
 	wait(0.3)
-	
+
 	return Window
 end
 
@@ -2388,6 +2417,10 @@ function MinosLibLibrary:LoadConfiguration()
 			end
 		end)
 	end
+end
+
+function MinosLibLibrary:ChangeHideKey(keyCode)
+	hideKey = Enum.KeyCode[keyCode]
 end
 
 return MinosLibLibrary
